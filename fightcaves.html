@@ -1,0 +1,134 @@
+<html>
+<style>
+#map{
+	margin-bottom:3px;
+}
+button{
+	margin-bottom:3px;
+	width:250px;
+}
+</style>
+<button onclick="prev()">Prev</button><button onclick="next()">Next</button>
+<br>
+<canvas id="map"></canvas>
+<br>
+<select id="spawns" onchange="init()">
+	
+	<option value="2" >Rotation 1 C</option>
+	<option value="13">Rotation 2 C</option>
+	<option value="8" >Rotation 3 C</option>
+	
+	<option value="12">Rotation 4 NW</option>
+	<option value="7" >Rotation 5 NW</option>
+	<option value="3" >Rotation 6 NW</option>
+
+	<option value="11">Rotation 7 S</option>
+	<option value="6" >Rotation 8 S</option>
+	<option value="14">Rotation 9 S</option>
+
+	<option value="5" >Rotation 10 SE</option>
+	<option value="0" >Rotation 11 SE</option>
+	<option value="9" >Rotation 12 SE</option>
+
+	<option value="1" >Rotation 13 SW</option>
+	<option value="10">Rotation 14 SW</option>
+	<option value="4" >Rotation 15 SW</option>
+	
+</select>
+<script>
+
+var can = document.getElementById("map")
+var ctx = can.getContext("2d");
+can.width = 500
+can.height = 500
+var map = new Image()
+map.src = "map.png"
+
+var clock = [4,2,1,0,2,4,3,0,1,4,2,3,0,1,3]
+var loc = [[100,100],[230,230],[100,370],[300,350],[375,280]]
+
+
+
+
+var locc = []
+
+
+
+var wave = 1
+var rot = 2
+
+
+function init(){
+	rot = parseInt(document.getElementById("spawns").value)
+	drawWave()
+
+	
+}
+
+
+function next(){
+	wave = Math.min(63,wave+1)
+	drawWave()
+}
+function prev(){
+	wave = Math.max(1,wave-1)
+	drawWave()
+}
+
+
+
+
+
+
+map.onload = function(){
+	drawWave();
+}
+
+function drawMob(ci,color,size=25){
+	ctx.fillStyle = color
+	ctx.beginPath();
+	ctx.arc(loc[ci][0],loc[ci][1],size,0,Math.PI*2)
+	ctx.fill();
+}
+
+function drawWave(){
+
+	ctx.clearRect(0,0,can.width,can.height);
+	ctx.drawImage(map,0,0,can.width,can.height);
+
+	ctx.fillStyle = "cyan"
+	ctx.font = "30px Arial";
+	ctx.fillText("Wave "+wave,300,50);
+
+	var w = wave
+	var li = (rot+w-1)%15
+
+	while(w>0){
+		if(w>=63){
+			drawMob(clock[li],"cyan");
+			drawMob(clock[(li+1)%15],"purple",15)
+			drawMob(clock[(li+2)%15],"purple",15)
+			drawMob(clock[(li+3)%15],"purple",15)
+			drawMob(clock[(li+4)%15],"purple",15)
+			w -= 63
+		}else if(w>=31){
+			drawMob(clock[li],"red",30);
+			w-=31
+		}else if(w>=15){
+			drawMob(clock[li],"yellow",25);
+			w-=15
+		}else if(w>=7){
+			drawMob(clock[li],"green",20);
+			w-=7
+		}else if(w>=3){
+			drawMob(clock[li],"grey",15);
+			w-=3
+		}else{
+			drawMob(clock[li],"white",10);
+			w--
+		}
+		li = (li+1)%15
+	}
+}
+</script>
+</html>
