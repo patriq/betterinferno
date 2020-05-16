@@ -11,8 +11,7 @@
 	vertical-align: top;
 }
 button{
-	margin-bottom:2px;
-	margin-top:2px;
+	margin-bottom:3px;
 }
 </style>
 </head>
@@ -27,10 +26,11 @@ button{
 <button onclick="setMode(4)">Ranger</button>
 <button onclick="setMode(5)">Mager</button>
 <br>
-<canvas id="map" onselectstart="return false" oncontextmenu="return false"></canvas>
 <button onclick="togglePillar(0)">Toggle W Pillar</button>
 <button onclick="togglePillar(1)">Toggle N Pillar</button>
 <button onclick="togglePillar(2)">Toggle S Pillar</button>
+<br>
+<canvas id="map" onselectstart="return false" oncontextmenu="return false"></canvas>
 <script>
 var SIZE = [1,2,3,4,3,4];
 var RANGE = [10,4,15,1,15,15];
