@@ -67,17 +67,15 @@ document.getElementById("map").addEventListener('mousedown',function(e){
 		drawWave();
 	}
 });
-document.getElementById("map").addEventListener('wheel',function(e){
-	if(e.deltaY>0){
+document.getElementById("map").addEventListener('keydown',function(e){
+	if (e.key === 'ArrowRight') {
 		step();
 		drawWave();
-	}else{
+	}
+	if (e.key === 'ArrowLeft') {
 		reset();
 		drawWave();
 	}
-});
-document.addEventListener('keydown',function(e){
-	//keyboard shortcuts for future?
 });
 function togglePillar(x){
 	filters[x] = !filters[x];
