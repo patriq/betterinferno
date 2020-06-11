@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Better inferno</title>
+</head>
+<style>
+    body {
+        background-color: #181818;
+        color: #efefef;
+        font-family: Arial,serif;
+    }
+
+    .container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        -moz-transform: translateX(-50%) translateY(-50%);
+        -webkit-transform: translateX(-50%) translateY(-50%);
+        transform: translateX(-50%) translateY(-50%);
+    }
+
+    #map {
+        border: #efefef solid 1px;
+    }
+</style>
+<body>
+<div class="container">
+    <div><p>Selected type: <span id="type">None</span></div>
+    <canvas id="map" onselectstart="return false" oncontextmenu="return false"></canvas>
+</div>
+<script src="inferno.js"></script>
+</body>
+</html>
