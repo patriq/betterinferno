@@ -130,6 +130,7 @@ const onKeyDown = (event) => {
   }
   if (event.key === 'Escape') {
     clearEntities();
+    reset();
   }
 
   // All different NPCs
@@ -417,10 +418,8 @@ const renderMap = () => {
 const renderTape = () => {
   // Render background
   const tapeOffset = MAP_TILE_WIDTH;
-  for (let y = 0; y < MAP_TILE_HEIGHT; y++) {
-    ctx.fillStyle = 'white';
-    fillStripRectangle([tapeOffset, y], TAPE_TILE_WIDTH, 1);
-  }
+  ctx.fillStyle = 'white';
+  fillStripRectangle([tapeOffset, 0], TAPE_TILE_WIDTH, MAP_TILE_HEIGHT);
 
   for (let y = 0; y < tape.length; y++) {
     // Draw the background of the line
@@ -433,7 +432,7 @@ const renderTape = () => {
       if (entityType > 0) {
         ctx.fillStyle = entityTypeInfo(entityType).color;
         fillStripRectangle([tapeOffset + x, y], 1, 1);
-      } else if (entityType === -BLOB && x >= 3 && tape[x - 3][x] === 2) {
+      } else if (entityType === -BLOB && y >= 3 && tape[y - 3][x] === 2) {
         ctx.fillStyle = 'black';
         fillStripRectangle([tapeOffset + x, y], 1, 1);
       }
