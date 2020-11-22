@@ -23,13 +23,34 @@
         transform: translateX(-50%) translateY(-50%);
     }
 
+    .topBar {
+        margin: 10px 0;
+    }
+
+    .prayers {
+        display: inline;
+        float: right;
+    }
+
+    .active {
+        background: #ffe547;
+    }
+
     #map {
         border: #efefef solid 1px;
     }
 </style>
 <body>
 <div class="container">
-    <div><p>Selected type: <span id="type">None</span></div>
+    <div class="topBar">
+        <span>Selected type: <span id="type">None</span></span>
+        <div class="prayers">
+            <span>Prayer:</span>
+            <button id="mage">Mage</button>
+            <button id="range">Range</button>
+            <button id="melee">Melee</button>
+        </div>
+    </div>
     <canvas id="map" onselectstart="return false" oncontextmenu="return false"></canvas>
 </div>
 <script src="inferno.js"></script>

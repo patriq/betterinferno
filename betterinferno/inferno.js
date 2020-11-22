@@ -81,12 +81,17 @@ const MAP_HEIGHT = TILE_SIZE * MAP_TILE_HEIGHT;
 let map = null;
 let ctx = null;
 let typeLabel = null;
+let mage = null;
+let range = null;
+let melee = null;
 
 // Main variables
 let currentEntity = { tile: [16, 5], type: PLAYER };
 let currentEntities = [];
 let tape = [];
 let pillarAlive = [true, true, true];
+let prayActive = [false, false, false];
+let nextTickPrayActive = [...prayActive];
 
 // Handlers
 window.addEventListener('load', () => {
@@ -102,6 +107,14 @@ window.addEventListener('load', () => {
 
   // Add keyboard listener
   document.addEventListener('keydown', onKeyDown);
+
+  // Add prayer listeners
+  mage = document.getElementById('mage');
+  range = document.getElementById('range');
+  melee = document.getElementById('melee');
+  mage.addEventListener('click', onPrayClick(0));
+  range.addEventListener('click', onPrayClick(1));
+  melee.addEventListener('click', onPrayClick(2));
 
   // Render
   render();
@@ -163,6 +176,14 @@ const onKeyDown = (event) => {
 
   render();
 };
+
+const onPrayClick = (pray) => () => {
+  // Make sure that when you select a prayer, the others get swapped
+  const temp = [false, false, false];
+  nextTickPrayActive[pray] = !nextTickPrayActive[pray];
+  temp[pray] = nextTickPrayActive[pray];
+  nextTickPrayActive = [...temp];
+}
 
 // Entity functions
 const placeCurrentEntity = () => {
@@ -330,6 +351,9 @@ const step = () => {
   if (currentEntity.type !== PLAYER || currentEntities.length === 0)
     return;
 
+  // Pray
+  prayActive = [...nextTickPrayActive];
+
   const line = [];
   for (const entity of currentEntities) {
     entity.cycle--;
@@ -378,12 +402,25 @@ const reset = () => {
     entity.cycle = 0;
   }
   tape = [];
+  prayActive = [false, false, false];
+  nextTickPrayActive = [...prayActive];
 }
 
 // Render functions
 const render = () => {
   renderMap();
   renderCurrentType();
+  renderPrayButtons();
+};
+
+const renderPrayButtons = () => {
+  // Update each button
+  const renderPray = (index, button) => {
+    if (prayActive[index] !== button.classList.contains("active")) button.classList.toggle("active");
+  }
+  renderPray(0, mage);
+  renderPray(1, range);
+  renderPray(2, melee);
 };
 
 const renderCurrentType = () => {
