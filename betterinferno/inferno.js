@@ -157,9 +157,12 @@ const onKeyDown = (event) => {
     switchCurrentEntityType(BLOB);
   }
   if (event.key === '4') {
-    switchCurrentEntityType(RANGER);
+    switchCurrentEntityType(SNAKE);
   }
   if (event.key === '5') {
+    switchCurrentEntityType(RANGER);
+  }
+  if (event.key === '6') {
     switchCurrentEntityType(MAGER);
   }
 
@@ -258,7 +261,7 @@ const hasLineOfSight = (tile1, tile2, size = 1, range = 1, isNPC = false) => {
 
   // Assume range 1 is melee
   if (range === 1) {
-    return (dx < size && dx >= 0 && (dy === 1 || dy === -size)) || (dy > -size && dy <= 0 && (dx === -size || dx === size));
+    return (dx < size && dx >= 0 && (dy === 1 || dy === -size)) || (dy > -size && dy <= 0 && (dx === -1 || dx === size));
   }
 
   if (isNPC) {
