@@ -149,15 +149,6 @@ const onKeyDown = (event) => {
     resetTape();
   }
 
-  // Place NPC and clear NPCs
-  if (event.key === ' ') {
-    placeCurrentEntity();
-  }
-  if (event.key === 'Escape') {
-    resetTape();
-    resetState();
-  }
-
   // All different NPCs
   if (event.key === '1') {
     switchCurrentEntityType(PLAYER);
@@ -178,23 +169,32 @@ const onKeyDown = (event) => {
     switchCurrentEntityType(MAGER);
   }
 
-  // All pillars
+  // Place NPC and clear NPCs
+  if (event.key === ' ') {
+    placeCurrentEntity();
+    encodeStateToUrl();
+  }
+  if (event.key === 'Escape') {
+    resetTape();
+    resetState();
+    encodeStateToUrl();
+  }
+
+  // Toggle pillars
   if (event.key === 'n') {
     togglePillar(PILLAR_NORTH);
+    encodeStateToUrl();
   }
   if (event.key === 's') {
     togglePillar(PILLAR_SOUTH);
+    encodeStateToUrl();
   }
   if (event.key === 'w') {
     togglePillar(PILLAR_WEST);
+    encodeStateToUrl();
   }
 
-  // Only render if one of the listening keys was pressed.
-  const listeningKeys = ['ArrowRight', 'ArrowLeft', ' ', 'Escape', '1', '2', '3', '4', '5', '6', 'n', 's', 'w'];
-  if (listeningKeys.includes(event.key)) {
-    encodeStateToUrl();
-    render();
-  }
+  render();
 };
 
 const onPrayClick = (pray) => () => {
