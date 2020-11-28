@@ -189,8 +189,12 @@ const onKeyDown = (event) => {
     togglePillar(PILLAR_WEST);
   }
 
-  encodeStateToUrl();
-  render();
+  // Only render if one of the listening keys was pressed.
+  const listeningKeys = ['ArrowRight', 'ArrowLeft', ' ', 'Escape', '1', '2', '3', '4', '5', '6', 'n', 's', 'w'];
+  if (listeningKeys.includes(event.key)) {
+    encodeStateToUrl();
+    render();
+  }
 };
 
 const onPrayClick = (pray) => () => {
