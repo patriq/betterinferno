@@ -86,12 +86,12 @@ let range = null;
 let melee = null;
 
 // Main variables
-let currentEntity = { tile: [16, 5], type: PLAYER };
-let currentEntities = [];
-let tape = [];
-let pillarAlive = [true, true, true];
-let prayActive = [false, false, false];
-let nextTickPrayActive = [...prayActive];
+let currentEntity = null;
+let currentEntities = null;
+let tape = null;
+let pillarAlive = null;
+let prayActive = null;
+let nextTickPrayActive = null;
 
 // Handlers
 window.addEventListener('load', () => {
@@ -116,9 +116,21 @@ window.addEventListener('load', () => {
   range.addEventListener('click', onPrayClick(1));
   melee.addEventListener('click', onPrayClick(2));
 
+  // Re-load and render
+  window.onpopstate = onReload;
+  onReload();
+});
+
+const onReload = () => {
+  // Clear
+  resetState();
+
+  // Check if we have any state in the URL
+  decodeStateFromUrl();
+
   // Render
   render();
-});
+};
 
 const onMapClick = (event) => {
   const x = Math.floor(event.offsetX / TILE_SIZE);
@@ -134,7 +146,7 @@ const onKeyDown = (event) => {
     step();
   }
   if (event.key === 'ArrowLeft') {
-    reset();
+    resetTape();
   }
 
   // Place NPC and clear NPCs
@@ -142,8 +154,8 @@ const onKeyDown = (event) => {
     placeCurrentEntity();
   }
   if (event.key === 'Escape') {
-    clearEntities();
-    reset();
+    resetTape();
+    resetState();
   }
 
   // All different NPCs
@@ -177,6 +189,7 @@ const onKeyDown = (event) => {
     togglePillar(PILLAR_WEST);
   }
 
+  encodeStateToUrl();
   render();
 };
 
@@ -215,8 +228,13 @@ const switchCurrentEntityType = (newType) => {
   currentEntity.type = newType;
 };
 
-const clearEntities = () => {
+const resetState = () => {
+  currentEntity = {tile: [16, 5], type: PLAYER};
   currentEntities = [];
+  tape = [];
+  pillarAlive = [true, true, true];
+  prayActive = [false, false, false];
+  nextTickPrayActive = [...prayActive];
 };
 
 const entityInfo = (entity) => entityTypeInfo(entity.type);
@@ -399,7 +417,7 @@ const step = () => {
   tape.push(line);
 };
 
-const reset = () => {
+const resetTape = () => {
   for (const entity of currentEntities) {
     entity.tile = JSON.parse(JSON.stringify(entity.originalTile));
     entity.cycle = 0;
@@ -570,3 +588,47 @@ const fillStripRectangle = (tile, width, height) => {
   const [tileX, tileY] = tile;
   ctx.fillRect(tileX * TILE_SIZE, tileY * TILE_SIZE, width * TILE_SIZE, height * TILE_SIZE);
 };
+
+const encodeStateToUrl = () => {
+  // Encode entities
+  let encodedState = `${currentEntities.length},`;
+  for (let entity of currentEntities) {
+    encodedState += `${entity.type},${entity.originalTile[0]},${entity.originalTile[1]},`;
+  }
+  // Encode pillars
+  const encodedPillars = ((pillarAlive[0] | 0) << 0) | ((pillarAlive[1] | 0) << 1) | ((pillarAlive[2] | 0) << 2);
+  encodedState += `${encodedPillars}`;
+  // Add to URL
+  const url = new URL(window.location.href);
+  url.searchParams.set('s', encodedState);
+  window.history.pushState("", "", url.toString());
+}
+
+const decodeStateFromUrl = () => {
+  // Check if we have any get parameters
+  const urlParams = window.location.search;
+  const args = new URLSearchParams(urlParams);
+  if (!args.has('s')) {
+    return;
+  }
+  const state = args.get('s');
+  // Decode entities
+  const exploded = state.split(',');
+  let size = parseInt(exploded[0]);
+  for (let i = 0; i < size; i++) {
+    const entityBase = (i * 3) + 1;
+    const tile = [parseInt(exploded[entityBase + 1]), parseInt(exploded[entityBase + 2])];
+    const entity = {
+      type: parseInt(exploded[entityBase]),
+      tile,
+      originalTile: tile,
+      cycle: 0
+    };
+    currentEntities.push(entity);
+  }
+  // Decode pillars
+  const pillars = parseInt(exploded[exploded.length - 1]);
+  pillarAlive[0] = ((pillars & (0x1 << 0)) >> 0) && true;
+  pillarAlive[1] = ((pillars & (0x1 << 1)) >> 1) && true;
+  pillarAlive[2] = ((pillars & (0x1 << 2)) >> 2) && true;
+}
